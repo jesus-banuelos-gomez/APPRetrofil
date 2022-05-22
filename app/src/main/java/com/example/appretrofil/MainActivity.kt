@@ -14,7 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class MainActivity : AppCompatActivity(), SearchView.{
+class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener{
 
     private  lateinit var binding: ActivityMainBinding
     private  lateinit var adapter: DogAdapter
@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity(), SearchView.{
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.svDogs.setOnQueryTextListener(this)
         initRecyclerView()
     }
 
@@ -62,11 +63,14 @@ class MainActivity : AppCompatActivity(), SearchView.{
         Toast.makeText(this,"Ha ocurrido un error", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onQueryTextSubmit(p0: String?): Boolean {
-
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if(!query.isNullOrEmpty()){
+            searchByName(query.toLowerCase())
+        }
+        return true
     }
 
-    override fun onQueryTextChange(p0: String?): Boolean {
+    override fun onQueryTextChange(newText: String?): Boolean {
         return true
     }
 }
