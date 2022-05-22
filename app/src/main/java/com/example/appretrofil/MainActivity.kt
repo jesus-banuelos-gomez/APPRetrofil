@@ -63,9 +63,7 @@ class MainActivity : AppCompatActivity(), SearchView.{
     }
 
     override fun onQueryTextSubmit(p0: String?): Boolean {
-        if (!query.isNullOrEmpmty()){
-            searchByName()
-        }
+
     }
 
     override fun onQueryTextChange(p0: String?): Boolean {
