@@ -7,13 +7,14 @@ import com.example.appretrofil.databinding.ItemDogBinding
 import com.squareup.picasso.Picasso
 
 
+
 class DogViewHolder(view:View):RecyclerView.ViewHolder(view){
 
     private val binding = ItemDogBinding.bind(view)
 
     fun bind(image:String){
-        Picasso.get
-        binding.ivDog
+        Picasso.get().load(image).into(binding.ivDog)
+
     }
 
 }

@@ -2,21 +2,23 @@ package com.example.appretrofil
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.SearchView
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.appretrofil.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
-import retrofit2.http.Query
-import retrofit2.http.QueryName
-import kotlin.coroutines.coroutineContext
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity(), SearchView.{
 
     private  lateinit var binding: ActivityMainBinding
+    private  lateinit var adapter: DogAdapter
+    private val dogImages = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +28,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-
+        adapter = DogAdapter(dogImages)
+        binding.rvDogs.layoutManager = LinearLayoutManager(this)
+        binding.rvDogs.adapter = adapter
     }
 
     private fun getRetrofit():Retrofit{
@@ -40,11 +44,31 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val call = getRetrofit().create(APIService::class.java).getDogsByBreeds("$query/images")
             val pupples:DogsResponse? = call.body()
-            if (call.isSuccessful){
-
-            }else{
-
+            runOnUiThread {
+                if (call.isSuccessful){
+                        val images:List<String> = pupples?.imagenes ?: emptyList()
+                        dogImages.clear()
+                        dogImages.addAll(images)
+                        adapter.notifyDataSetChanged()
+                }else{
+                    showError()
+                }
             }
+
         }
+    }
+
+    private fun showError() {
+        Toast.makeText(this,"Ha ocurrido un error", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onQueryTextSubmit(p0: String?): Boolean {
+        if (!query.isNullOrEmpmty()){
+            searchByName()
+        }
+    }
+
+    override fun onQueryTextChange(p0: String?): Boolean {
+        return true
     }
 }
