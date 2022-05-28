@@ -2,8 +2,10 @@ package com.example.appretrofil
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appretrofil.databinding.ActivityMainBinding
@@ -14,7 +16,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener{
+class MainActivity : AppCompatActivity(), OnQueryTextListener{
+
 
     private  lateinit var binding: ActivityMainBinding
     private  lateinit var adapter: DogAdapter
@@ -54,9 +57,15 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener{
                 }else{
                     showError()
                 }
+                hideKeyboard()
             }
 
         }
+    }
+
+    private fun hideKeyboard() {
+        val imm:InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.svDogs.windowToken,0)
     }
 
     private fun showError() {
@@ -74,3 +83,4 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener{
         return true
     }
 }
+
